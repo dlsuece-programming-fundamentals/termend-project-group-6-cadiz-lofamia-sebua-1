@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sari-Sari Store Inventory</title>
+        <!-- Bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Sari-Sari Store</h1>
+            <!-- Customer with debt will be displayed here -->
+            <div id="inventoryList">
+                No customers with debt. All customers are up to date with their payments. Click "Add New Customer" to start adding customers with debt.
+            </div>
+            <button class="btn btn-primary mt-3" id="addCustomerBtn">Add New Customer</button>
+          <!-- Total Outstanding Balance -->
+            <div class="card mt-3 p-3">
+                <h5>Total Outstanding Balance: ₱<span id="totalOutstandingBalance">0.00</span></h5>
+                0 customer(s) with debt.
+            </div>
+        </div>
+    <!-- Bottom Nav -->
+        <div class="bottom-nav">
+            <a href="index.html" class="active">Sell</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="customers.html">Customers</a>
+            <a href="summary.html">Summary</a>
+        </div>
+        <script src="js/script.js"></script>
+    </body>
