@@ -1,0 +1,60 @@
+body {
+  background: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+.mobile-container {
+  max-width: 420px;
+  margin: auto;
+  padding-bottom: 80px;
+}
+
+.header {
+  background: linear-gradient(to right, blue, purple);
+  color: white;
+  padding: 15px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.gradient-card {
+  background: linear-gradient(to right, green, blue);
+  color: white;
+  border-radius: 10px;
+}
+
+.active-btn {
+  border: 2px solid black;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  padding: 10px 0;
+  border-top: 1px solid #ccc;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: gray;
+  font-size: 14px;
+}
+
+.bottom-nav a.active {
+  color: blue;
+  font-weight: bold;
+}
+
+.item-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: white;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
