@@ -2,54 +2,315 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sari-Sari Store Inventory</title>
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sari-Sari Store POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Base Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --primary-blue: #6146ff;
+            --active-blue: #226cff;
+            --rainbow: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+            --gray-bg: #f8f9fa;
+            --text-dark: #1a1d23;
+            --text-muted: #adb5bd;
+            --border: #e9ecef;
+            --bottom-nav-h: 75px;
+        }
+
+        body { 
+            font-family: 'Nunito', sans-serif; 
+            background: var(--gray-bg); 
+            color: var(--text-dark); 
+            min-height: 100dvh; 
+            padding-bottom: calc(var(--bottom-nav-h) + 20px); 
+        }
+
+        .topbar { 
+            background: var(--primary-blue); 
+            padding: 18px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            text-align: center; 
+            color: white; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+        }
+        .topbar h1 { font-size: 1.2rem; font-weight: 800; }
+
+        .page { padding: 16px; max-width: 500px; margin: auto; }
+
+        /* Transaction Card */
+        .rainbow-card { 
+            background: var(--rainbow); 
+            border-radius: 20px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            position: relative;
+            overflow: hidden;
+        }
+        .card-label { font-size: 1rem; font-weight: 800; color: white; margin-bottom: 12px; }
+
+        .mode-toggle { 
+            display: flex; 
+            background: rgba(255,255,255,0.2); 
+            border-radius: 14px; 
+            padding: 4px; 
+            gap: 4px; 
+        }
+        .mode-toggle label { 
+            flex: 1; text-align: center; padding: 12px; border-radius: 10px; 
+            font-size: 0.9rem; font-weight: 700; color: white; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; gap: 6px; 
+        }
+        .mode-toggle input[type=radio] { display: none; }
+        .mode-toggle input:checked + label { background: white; color: #009688; }
+
+        .customer-field { margin-top: 12px; display: none; }
+        .customer-field.visible { display: block; }
+        .customer-field input { 
+            width: 100%; padding: 12px; border-radius: 12px; border: none; 
+            background: white; font-family: inherit; font-weight: 600; outline: none; 
+        }
+
+        /* Items Section */
+        .section-label { font-size: 0.95rem; font-weight: 800; color: #000; margin-bottom: 12px; }
+
+        .item-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .item-card { 
+            background: white; border: 1px solid var(--border); border-radius: 15px; 
+            padding: 15px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .item-card:active { background: #f0f0f0; }
+
+        /* Summary */
+        .total-bar { 
+            background: white; border: 1px solid var(--border); border-radius: 15px; 
+            padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; 
+        }
+        .total-label { font-size: 1rem; font-weight: 700; }
+        .total-amount { font-size: 1.2rem; font-weight: 900; }
+
+        .complete-btn { 
+            width: 100%; padding: 18px; border: none; border-radius: 15px; 
+            font-family: inherit; font-size: 1rem; font-weight: 800; color: white; 
+            background: #ced4da; transition: 0.3s;
+        }
+        .complete-btn.active-ready { background: var(--active-blue); box-shadow: 0 4px 15px rgba(34,108,255,0.3); }
+
+        /* Navigation */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h); 
+            background: white; border-top: 1px solid var(--border); display: flex; 
+            justify-content: space-around; align-items: center; z-index: 200; 
+        }
+        .nav-item { flex: 1; text-decoration: none; display: flex; justify-content: center; color: #5f6368; }
+        .nav-icon-wrap { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            width: 85px; height: 60px; border-radius: 14px; gap: 2px; 
+        }
+        .nav-item.active { color: white; }
+        .nav-item.active .nav-icon-wrap { background: var(--active-blue); }
+        .nav-item span:first-child { font-size: 1.3rem; }
+        .nav-item span:last-child { font-size: 0.75rem; font-weight: 700; }
+
+        .toast { 
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); 
+            background: #323232; color: white; padding: 12px 24px; border-radius: 50px; 
+            font-size: 0.9rem; opacity: 0; transition: 0.3s; z-index: 1000;
+        }
+        .toast.show { opacity: 1; }
+    </style>
 </head>
 <body>
-    <div class="container mobile-container">
-        Sari-Sari Store 
+
+<div class="topbar"><h1>Sari-Sari Store</h1></div>
+
+<div class="page">
+    <div class="rainbow-card">
+        <div class="card-label">New Transaction</div>
+        <div class="mode-toggle">
+            <input type="radio" name="saleType" id="cash" checked>
+            <label for="cash" onclick="updateMode('cash')">🛒 Cash Sale</label>
+            <input type="radio" name="saleType" id="utang">
+            <label for="utang" onclick="updateMode('utang')">💳 Credit/Utang</label>
+        </div>
+        <div class="customer-field" id="customerDiv">
+            <input type="text" id="customerName" placeholder="👤 Who is borrowing?">
+        </div>
+    </div>
+
+    <div class="section-label">Select Items</div>
+    <div class="item-list" id="itemList"></div>
+
+    <div class="total-bar">
+        <span class="total-label">Total:</span>
+        <span class="total-amount">₱<span id="totalDisplay">0.00</span></span>
+    </div>
     
-    <!-- Transaction Card -->
-     <div class="card p-3 mt-3 gradient-card">
-        <h5 class="card-title">New Transaction</h5>
-        <div class="d-flex gap-3 mt-3">
-            <button class="btn btn-light w-50 active-btn" onclick="setType('cash')">
-                 Cash Sale
-            </button>
-            <button class="btn btn-info w-50" onclick="setType('utang')">
-                 Credit / Utang
-            </button>
-        </div>    
-     </div>
-       <!-- Item List -->
-    <div class="mt-4">
-        <h6>Select Items</h6>
+    <button class="complete-btn" id="completeBtn" onclick="processSale()" disabled>Complete Transaction</button>
+</div>
 
-        <div id="itemList"></div>
-    </div>
+<nav class="bottom-nav">
+    <a href="sell.html" class="nav-item active">
+        <div class="nav-icon-wrap"><span>🛒</span><span>Sell</span></div>
+    </a>
+    <a href="inventory.html" class="nav-item">
+        <div class="nav-icon-wrap"><span>📦</span><span>Inventory</span></div>
+    </a>
+    <a href="customers.html" class="nav-item">
+        <div class="nav-icon-wrap"><span>👥</span><span>Customers</span></div>
+    </a>
+    <a href="summary.html" class="nav-item">
+        <div class="nav-icon-wrap"><span>📊</span><span>Summary</span></div>
+    </a>
+</nav>
 
-  <!-- Total -->
-    <div class="card mt-3 p-3">
-        <h5>Total: ₱<span id="total">0.00</span></h5>
-    </div>
+<div class="toast" id="toast"></div>
 
-  <!-- Button -->
-        <button class="btn btn-secondary w-100 mt-3" id="completeBtn" disabled>
-            Complete Transaction
-        </button>
+<script>
+    const API = { items: 'api/get_items.php', sale: 'api/process_sale.php' };
+    let inventory = [], cart = {}, currentMode = 'cash';
 
-    </div>
+    // Load Items from DB
+    async function loadItems() {
+        const listEl = document.getElementById('itemList');
+        listEl.innerHTML = '<p style="text-align:center;color:gray">Loading items...</p>';
+        
+        try {
+            const res = await fetch(API.items);
+            const data = await res.json();
+            if (data.success) {
+                inventory = data.items;
+                renderInventory();
+            }
+        } catch (err) {
+            listEl.innerHTML = '<p style="text-align:center;color:red">Failed to load items.</p>';
+        }
+    }
 
-        <!-- Bottom Nav -->
-    <div class="bottom-nav">
-        <a href="sell.html" class="active">Sell</a>
-        <a href="inventory.html">Inventory</a>
-        <a href="customers.html">Customers</a>
-        <a href="summary.html">Summary</a>
-    </div>
-    <script src="js/script.js"></script>
+    function renderInventory() {
+        const el = document.getElementById('itemList');
+        if (inventory.length === 0) {
+            el.innerHTML = '<p style="text-align:center;color:gray">No items in stock.</p>';
+            return;
+        }
+        el.innerHTML = inventory.map(item => {
+            const qty = cart[item.id] || 0;
+            return `
+            <div class="item-card" onclick="addToCart(${item.id})">
+                <div>
+                    <div style="font-weight:800; font-size: 1rem;">${item.name}</div>
+                    <div style="font-size:0.85rem; color:var(--text-muted)">₱${parseFloat(item.price).toFixed(2)} — Stock: ${item.stock}</div>
+                </div>
+                ${qty > 0 ? `<div style="background:var(--active-blue); color:white; padding:4px 12px; border-radius:12px; font-weight:900">${qty}</div>` : 
+                `<div style="color:var(--active-blue); font-weight:800; font-size:1.2rem">+</div>`}
+            </div>`;
+        }).join('');
+    }
+
+    function addToCart(id) {
+        const item = inventory.find(i => i.id == id);
+        if (!item) return;
+
+        const currentQty = cart[id] || 0;
+        if (currentQty >= item.stock) {
+            showToast("⚠️ Out of stock!");
+            return;
+        }
+
+        cart[id] = currentQty + 1;
+        refreshUI();
+    }
+
+    function refreshUI() {
+        renderInventory();
+        let total = 0;
+        inventory.forEach(i => {
+            if (cart[i.id]) total += parseFloat(i.price) * cart[i.id];
+        });
+        
+        document.getElementById('totalDisplay').innerText = total.toFixed(2);
+        
+        const btn = document.getElementById('completeBtn');
+        if (total > 0) {
+            btn.disabled = false;
+            btn.classList.add('active-ready');
+        } else {
+            btn.disabled = true;
+            btn.classList.remove('active-ready');
+        }
+    }
+
+    function updateMode(mode) {
+        currentMode = mode;
+        document.getElementById('customerDiv').classList.toggle('visible', mode === 'utang');
+    }
+
+    async function processSale() {
+        const btn = document.getElementById('completeBtn');
+        const customer = document.getElementById('customerName').value.trim();
+
+        if (currentMode === 'utang' && !customer) {
+            showToast("⚠️ Please enter customer name");
+            return;
+        }
+
+        // Prepare the items array exactly as process_sale.php expects it
+        const saleItems = [];
+        for (const id in cart) {
+            const item = inventory.find(i => i.id == id);
+            saleItems.push({
+                item_id: parseInt(id),
+                quantity: cart[id],
+                price: parseFloat(item.price)
+            });
+        }
+
+        const payload = {
+            type: currentMode,
+            customer_name: customer,
+            items: saleItems
+        };
+
+        btn.innerText = "Processing...";
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(API.sale, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showToast("✅ Sale Recorded!");
+                cart = {};
+                document.getElementById('customerName').value = '';
+                btn.innerText = "Complete Transaction";
+                refreshUI();
+                loadItems(); // Refresh stocks from DB
+            } else {
+                throw new Error(data.error || "Sale failed");
+            }
+        } catch (err) {
+            showToast("❌ " + err.message);
+            btn.disabled = false;
+            btn.innerText = "Complete Transaction";
+        }
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; 
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    loadItems();
+</script>
 </body>
 </html>
