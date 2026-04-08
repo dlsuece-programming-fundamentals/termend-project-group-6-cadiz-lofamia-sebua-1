@@ -9,23 +9,45 @@ A concise summary of the project, its objectives, and its outcomes.
 
 ## Introduction
 
-Briefly introduce the project and its significance. Provide an overview of the chosen area or application.
+For small neighborhood store owners who now use handwritten notebooks to track sales, inventory, and customer debts, this project suggests creating a web-based sari-sari store inventory and debt management system. Based on our field validation interviews, many store owners struggle with manual debt tracking, inventory management, and sales computation, resulting in lost revenue and ineffective day-to-day operations. Most sari-sari stores still use notebooks for tracking customer debt. This often results in calculation errors and lost sales and profit. It was discovered that store owners want simple, easy-to-use tools, and they rely on prepaid mobile data plans. Initially, it was assumed that store owners did not own smartphones, but they already have Android phones for Facebook and GCash use. Cloud-based systems can work in this setting, but it may be impractical for fully online systems due to data usage concerns. Given these concerns, the mobile app will focus on quick debt recording with minimal data consumption and large, simple user interface elements. 
 
 ## Description of the Proposed System
 
-Provide a comprehensive description of the developed system. Explain its relevance and impact on the chosen area or application.
+The sari-sari store owners require a system to track customer debts and basic inventory while accommodating strict constraints on limited mobile data access, limited smartphone storage, and ease of use. The proposed solution is a web-based application that is optimized for low-end mobile devices. Store owners can record debt transactions, track inventory, monitor customers’ outstanding balances, and generate sales summaries. The system will use HTML, CSS, JavaScript, and Bootstrap for the frontend, Node.js for the backend, and MySQL for the database. The system size must remain under 20 MB and work with minimal connectivity; the UI must use large buttons and elements for readability; and the core functionality and actions must require no more than 3 clicks. To preserve the user’s local storage and battery life, complex analytics, multi-store management, real-time cloud integration, and AI elements will not be included. 
 
 ## Objectives
 
-Clearly state the specific objectives of the project. Emphasize the importance of achieving these objectives.
+1. To create a web-based mobile application for sari-sari store owners running on a budget, which can run on low-end devices locally.
+2. To utilize HTML, CSS, JavaScript, and Bootstrap for the development of the application
+3. To record sales, debt, and customers that will be tracked by store owners
+
 
 ## Web Development Tools and Algorithms
 
-Detail the different web development tools you used in the project (HTML, CSS, JavaScript, Bootstrap, etc.). Describe the algorithms you implemented and their significance in the development stages.
+1. HTML—It will act as a skeleton and foundation for the webpage’s content. Contains text, paragraphs, lists, links, and images. 
+2. CSS—This adds colors, fonts, and layouts for HTML elements. Styles include a box model, button positioning, and item cards.
+3. JavaScript - Gives the logic and functionality in the web application to add customers, sales, and debts, as well as real-time information about it. 
+4. MySQL- Stores the information about customers, sales, transactions, and debts using a database. It was created using PHPMyAdmin.
+5. PHP - Gives functionality for MySQL. 
+6. Bootstrap - A CSS library that aims to develop a mobile-first application, which is very helpful for this project. 
+
 
 ## Methodology
 
-Explain the methodology used in developing the project. Include any experimental or testing methods employed to test your website's functionality.
+A. Development
+	A front-end is first developed to visualize how the program will look. A template is created in Figma, and afterward it will be coded in HTML and CSS. The site should contain 4 interfaces using 4 HTML files, namely, “Sell,” "Inventory," “Customers,” and “Summary.” The design is then enhanced using Bootstrap to make it mobile-friendly. 
+
+	After the front-end development is finished, an SQL database is created to store the website’s data. Five tables were created, containing customers, items, transactions, transaction items, and debt. A PHP script will be used to connect the application to the database. 
+
+
+	To design the back-end, the JavaScript files will create the logic for adding and deleting the items, customers, and their debts. These files will also provide the application's functionality. The buttons should be enabled for the aforementioned functionalities, and the database should be updated based on the site’s transactions. 
+
+
+B. Testing
+
+
+	To thoroughly test the program's functionality, features such as adding inventory, customers, and transactions should work as intended. When adding inventories, for example, a Coke worth 20 Php should be added to the database. For customers, a customer named “Juan” should also be added to the database. During transactions, sales are recorded on the summary page, and inventory items are removed from the database upon completion. Response times should be 1-2 seconds or less, without any crashes, to meet the needs of sari-sari store owners. The testing will be made using an Android device. 
+
 
 ## Testing and Evaluation of Results
 
