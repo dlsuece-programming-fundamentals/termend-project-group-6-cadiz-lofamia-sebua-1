@@ -1,82 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Summary</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sari-Sari Store — Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Page-specific styles for the Summary Dashboard */
+        .today-total { font-size: 2rem; font-weight: 900; margin-bottom: 4px; }
+        .today-sub { font-size: 0.85rem; font-weight: 700; opacity: 0.85; }
 
-        <!-- Bootstrap -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        .stat-row { display: flex; gap: 10px; margin-bottom: 16px; }
+        .stat-card {
+            flex: 1; background: white; border: 1px solid var(--border);
+            border-radius: 15px; padding: 14px; text-align: center;
+        }
+        .stat-label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+        .stat-value { font-size: 1.15rem; font-weight: 900; }
+        .stat-value.cash { color: var(--green); }
+        .stat-value.utang { color: var(--orange); }
 
-        <link rel="stylesheet" href="css/styles.css">
-    </head>
+        .filter-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+        .filter-tab {
+            padding: 8px 16px; border-radius: 20px; border: 1.5px solid var(--border);
+            background: white; font-family: inherit; font-size: 0.85rem;
+            font-weight: 700; color: var(--text-muted); cursor: pointer;
+        }
+        .filter-tab.active {
+            background: var(--active-blue); border-color: var(--active-blue); color: white;
+        }
 
-    <body>
+        .tx-type {
+            display: inline-block; font-size: 0.78rem; font-weight: 800;
+            padding: 3px 10px; border-radius: 20px; margin-bottom: 4px;
+        }
+        .tx-type.cash { background: #e8f5e9; color: var(--green); }
+        .tx-type.utang { background: #fff3e0; color: var(--orange); }
+    </style>
+</head>
+<body>
 
-    <div class="container mobile-container">
+    <div class="topbar"><h1>Summary</h1></div>
 
-    <!-- Header -->
-        <div class="header text-center">
-            Sari-Sari Store
+    <div class="page">
+        <div class="rainbow-card">
+            <div class="card-label">Today's Sales</div>
+            <div class="today-total">₱<span id="todayTotal">0.00</span></div>
+            <div class="today-sub"><span id="todayCount">0</span> transactions today</div>
         </div>
 
-    <!-- Filter Tabs -->
-        <div class="d-flex justify-content-between mt-3 filter-tabs">
-            <button class="btn btn-primary w-100 me-1 active" onclick="setFilter('today')">Today</button>
-            <button class="btn btn-light w-100 me-1" onclick="setFilter('week')">Week</button>
-            <button class="btn btn-light w-100" onclick="setFilter('month')">Month</button>
-        </div>
-
-    <!-- Total Sales -->
-        <div class="card mt-3 p-3 sales-card">
-            <h6>Total Sales</h6>
-            <h3>₱<span id="totalSales">0.00</span></h3>
-            <small><span id="totalTransactions">0</span> transaction(s)</small>
-        </div>
-
-        <!-- Net Profit -->
-        <div class="card mt-3 p-3 profit-card">
-            <h6>Net Profit</h6>
-            <h3>₱<span id="netProfit">0.00</span></h3>
-        </div>
-
-        <!-- Cash vs Credit -->
-        <div class="d-flex gap-2 mt-3">
-            <div class="card p-3 w-50 text-center cash-card">
-                <h6>Cash Received</h6>
-                <h5>₱<span id="cashTotal">0.00</span></h5>
+        <div class="stat-row">
+            <div class="stat-card">
+                <div class="stat-label">💵 Cash Today</div>
+                <div class="stat-value cash">₱<span id="cashTotal">0.00</span></div>
             </div>
-
-            <div class="card p-3 w-50 text-center credit-card">
-                <h6>Credit / Debt</h6>
-                <h5>₱<span id="utangTotal">0.00</span></h5>
+            <div class="stat-card">
+                <div class="stat-label">💳 Utang Today</div>
+                <div class="stat-value utang">₱<span id="utangTotal">0.00</span></div>
             </div>
         </div>
 
-        <!-- Empty State -->
-        <div class="text-center mt-5 text-muted">
-            <p>No transactions for this period</p>
+        <div class="section-label">Transactions</div>
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="setFilter('all', this)">All</button>
+            <button class="filter-tab" onclick="setFilter('cash', this)">Cash</button>
+            <button class="filter-tab" onclick="setFilter('utang', this)">Utang</button>
         </div>
-
+        
+        <div id="txList">
+            </div>
     </div>
 
-<!-- Bottom Nav -->
-<nav class="bottom-nav">
-    <a href="sell.html" class="nav-item active">
-        <div class="nav-icon-wrap"><span>🛒</span><span>Sell</span></div>
-    </a>
-    <a href="inventory.html" class="nav-item">
-        <div class="nav-icon-wrap"><span>📦</span><span>Inventory</span></div>
-    </a>
-    <a href="customers.html" class="nav-item">
-        <div class="nav-icon-wrap"><span>👥</span><span>Customers</span></div>
-    </a>
-    <a href="summary.html" class="nav-item">
-        <div class="nav-icon-wrap"><span>📊</span><span>Summary</span></div>
-    </a>
-</nav>
+    <nav class="bottom-nav">
+        <a href="sell.html" class="nav-item">
+            <div class="nav-icon-wrap"><span>🛒</span><span>Sell</span></div>
+        </a>
+        <a href="inventory.html" class="nav-item">
+            <div class="nav-icon-wrap"><span>📦</span><span>Inventory</span></div>
+        </a>
+        <a href="customers.html" class="nav-item">
+            <div class="nav-icon-wrap"><span>👥</span><span>Customers</span></div>
+        </a>
+        <a href="summary.html" class="nav-item active">
+            <div class="nav-icon-wrap"><span>📊</span><span>Summary</span></div>
+        </a>
+    </nav>
+
+    <div class="toast" id="toast"></div>
 
     <script src="js/summary.js"></script>
-
-    </body>
+</body>
 </html>

@@ -1,0 +1,56 @@
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+    --primary-blue: #6146ff;
+    --active-blue: #226cff;
+    --rainbow: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    --gray-bg: #f8f9fa;
+    --text-dark: #1a1d23;
+    --text-muted: #adb5bd;
+    --border: #e9ecef;
+    --bottom-nav-h: 75px;
+    --red: #e53935;
+    --green: #43a047;
+    --orange: #ef6c00;
+}
+
+body { 
+    font-family: 'Nunito', sans-serif; 
+    background: var(--gray-bg); 
+    color: var(--text-dark); 
+    min-height: 100dvh; 
+    padding-bottom: calc(var(--bottom-nav-h) + 20px); 
+}
+
+/* Shared Components (Top Bar, Nav, Toast) */
+.topbar { 
+    background: var(--primary-blue); 
+    padding: 18px; 
+    position: sticky; 
+    top: 0; 
+    z-index: 100; 
+    text-align: center; 
+    color: white; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+}
+.topbar h1 { font-size: 1.2rem; font-weight: 800; }
+
+.bottom-nav { 
+    position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h); 
+    background: white; border-top: 1px solid var(--border); display: flex; 
+    justify-content: space-around; align-items: center; z-index: 200; 
+}
+.nav-item { flex: 1; text-decoration: none; display: flex; justify-content: center; color: #5f6368; }
+.nav-icon-wrap { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    width: 85px; height: 60px; border-radius: 14px; gap: 2px; 
+}
+.nav-item.active { color: white; }
+.nav-item.active .nav-icon-wrap { background: var(--active-blue); }
+
+.toast { 
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); 
+    background: #323232; color: white; padding: 12px 24px; border-radius: 50px; 
+    font-size: 0.9rem; opacity: 0; transition: 0.3s; z-index: 1000;
+}
+.toast.show { opacity: 1; }

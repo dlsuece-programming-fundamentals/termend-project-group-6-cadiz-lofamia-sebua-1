@@ -1,128 +1,73 @@
-//load data or start fresh
-let customerList = JSON.parse(localStorage.getItem('sari-customers')) || [];
+const API = { customers: 'api/get_customers.php', pay: 'api/pay_utang.php' };
 
-function displayCustomers(){
-    const listContainer=document.getElementById('customerList');
-    const emptyMsg=document.getElementById('emptyState');
-    const utangDisplay=document.getElementById('totalUtang');
-    const countDisplay=document.getElementById('customerCount');
-
-    if (customerList.length===0){
-        listContainer.innerHTML='';
-        emptyMsg.style.display='block';
-        utangDisplay.innerText="0.00";
-        countDisplay.innerText="0";
-        return;
+async function loadCustomers() {
+    const el = document.getElementById('customerList');
+    try {
+        const res = await fetch(API.customers);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+        renderCustomers(data.customers);
+        updateTotalUnpaid(data.customers);
+    } catch (err) {
+        el.innerHTML = `<p style="color:red">❌ ${err.message}</p>`;
     }
+}
 
-    emptyMsg.style.display='none';
-    
-    let runningTotalDebt=0;
-    let totalDebtors=0;
-    let cardHtml='';
+function updateTotalUnpaid(customers) {
+    let total = 0;
+    customers.forEach(c => {
+        c.utangs.forEach(u => { if (u.status === 'unpaid') total += parseFloat(u.amount); });
+    });
+    document.getElementById('totalUnpaid').innerText = total.toFixed(2);
+}
 
-    customerList.forEach(person=>{
-        //add to total astounding
-        if (person.balance>0){
-            runningTotalDebt+=person.balance;
-            totalDebtors++;
-        }
+function renderCustomers(customers) {
+    const el = document.getElementById('customerList');
+    if (customers.length === 0) { el.innerHTML = '<p>No customers found.</p>'; return; }
 
-        cardHtml += `
-        <div class="customer-card shadow-sm border-0 mb-3 p-3 bg-white rounded">
-            <div class="d-flex justify-content-between align-items-center">
+    el.innerHTML = customers.map(c => {
+        const unpaid = c.utangs.filter(u => u.status === 'unpaid').reduce((s, u) => s + parseFloat(u.amount), 0);
+        const utangRows = c.utangs.map(u => `
+            <div style="display:flex; justify-content:space-between; background:#f0f0f0; padding:8px; border-radius:8px; margin-top:5px">
                 <div>
-                    <div class="customer-name h6 mb-0 fw-bold">${person.name}</div>
-                    <small class="text-muted">${person.phone || 'No phone number'}</small>
+                    <small>${new Date(u.created_at).toLocaleDateString()}</small><br>
+                    <b>₱${parseFloat(u.amount).toFixed(2)}</b>
                 </div>
-                
-                <div class="text-end">
-                    //red if they owe, green if cleared
-                    <div class="customer-debt ${person.balance > 0 ? 'text-danger' : 'text-success'} fw-bold h5 mb-0">
-                        ₱${person.balance.toFixed(2)}
-                    </div>
-                    
-                    //pay button
-                    ${person.balance > 0 ? 
-                        `<button class="btn btn-sm btn-outline-success mt-1 py-0 px-2" style="font-size: 0.75rem" 
-                         onclick="payDebt(${person.id})">Mark Paid</button>` : 
-                        `<span class="badge bg-light text-success border">Cleared</span>`
-                    }
+                <div>
+                    <span style="font-size:0.7rem; font-weight:800; color:${u.status === 'paid' ? 'green' : 'orange'}">${u.status.toUpperCase()}</span>
+                    ${u.status === 'unpaid' ? `<button onclick="payUtang(${u.id})" style="margin-left:5px">Pay</button>` : ''}
                 </div>
-            </div>
-        </div>`;
-    });
+            </div>`).join('');
 
-    listContainer.innerHTML = cardHtml;
-    
-    //update total astounding
-    utangDisplay.innerText=runningTotalDebt.toLocaleString(undefined,{
-        minimumFractionDigits: 2, 
-        maximumFractionDigits: 2
-    });
-    
-    countDisplay.innerText=totalDebtors;
+        return `
+            <div class="customer-card">
+                <div style="display:flex; justify-content:space-between; font-weight:900">
+                    <span>👤 ${c.name}</span>
+                    <span style="color:var(--orange)">₱${unpaid.toFixed(2)}</span>
+                </div>
+                ${utangRows}
+            </div>`;
+    }).join('');
 }
 
-//popup
-function openModal(){
-    const modalElement=document.getElementById('customerModal');
-    const bootstrapModal=new bootstrap.Modal(modalElement);
-    bootstrapModal.show();
+async function payUtang(id) {
+    if (!confirm('Mark as paid?')) return;
+    try {
+        const res = await fetch(API.pay, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.success) { showToast('✅ Paid!'); loadCustomers(); }
+    } catch (err) { showToast('❌ Error'); }
 }
 
-//save info
-function addCustomer(){
-    const nameField=document.getElementById('customerName');
-    const phoneField=document.getElementById('customerPhone');
-
-    const nameValue=nameField.value.trim();
-    const phoneValue=phoneField ? phoneField.value.trim():'';
-
-    if (!nameValue){
-        alert("Please enter the customer's name.");
-        return;
-    }
-
-    const newEntry={
-        id:Date.now(), //unique time id
-        name:nameValue,
-        phone:phoneValue,
-        balance:0 
-    };
-
-    //add to list
-    customerList.push(newEntry);
-    localStorage.setItem('sari-customers',JSON.stringify(customerList));
-    
-    //clear input
-    nameField.value='';
-    if(phoneField) phoneField.value='';
-    
-    //close modal
-    const modalEl=document.getElementById('customerModal');
-    const modalInstance=bootstrap.Modal.getInstance(modalEl);
-    modalInstance.hide();
-
-    displayCustomers();
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function payDebt(customerId){
-    //find person in list
-    const customer=customerList.find(c=>c.id===customerId);
-    
-    if (!customer)return;
-
-    //confirm to clear
-    const confirmPayment = confirm(`Confirm full payment of ₱${customer.balance.toFixed(2)} from ${customer.name}?`);
-    
-    if (confirmPayment){
-        //reset balance
-        customer.balance=0;
-        localStorage.setItem('sari-customers',JSON.stringify(customerList));
-        displayCustomers();
-    }
-}
-
-//run as soon as page loads
-document.addEventListener('DOMContentLoaded', displayCustomers);
+loadCustomers();
