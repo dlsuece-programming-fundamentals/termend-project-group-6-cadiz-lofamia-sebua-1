@@ -128,7 +128,7 @@ B. Testing
 
 ## References
 
-Cite all sources, research papers, and references used in the project.
+Mzizi, S. (2024). HTML, CSS, and JavaScript: Essential front-end languages explained. ITonlinelearning. https://www.itonlinelearning.com/blog/html-css-and-javascript-essential-front-end-languages-explained/#:~:text=Programming%20languages%20are%20the%20building,functionality%20to%20the%20web%20page. 
 
 ## Project Deliverables
 
