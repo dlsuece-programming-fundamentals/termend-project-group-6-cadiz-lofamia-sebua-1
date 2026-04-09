@@ -134,7 +134,7 @@ Mzizi, S. (2024). HTML, CSS, and JavaScript: Essential front-end languages expla
 
 Check off each item as you complete it:
 
-- [ ] **Project Documentation** — this README or uploaded document following the format above
+- [x] **Project Documentation** — this README or uploaded document following the format above
 - [X] **App Design** — Figma link submitted on Canvas
 - [X] **Source Code** — all HTML, CSS, JS, and assets in `src/`
 - [X] **Video Walkthrough** — max 5 minutes, link below
