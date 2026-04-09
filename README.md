@@ -143,7 +143,7 @@ Check off each item as you complete it:
 ## Video Walkthrough
 
 Paste your video link here:
-[> (https://youtu.be/QKwshvWta24)]
+https://youtu.be/QKwshvWta24
 
 Your walkthrough should demonstrate your website's key features and functionality. Max 5 minutes. There will be no presentation — your video should be clear enough that any student taking this course can understand your project.
 
