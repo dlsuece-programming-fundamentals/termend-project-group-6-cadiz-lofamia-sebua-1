@@ -1,4 +1,10 @@
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+/* --- Global Reset & Variables --- */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    -webkit-tap-highlight-color: transparent; 
+}
 
 :root {
     --primary-blue: #6146ff;
@@ -22,7 +28,7 @@ body {
     padding-bottom: calc(var(--bottom-nav-h) + 20px); 
 }
 
-/* Common Layout */
+/* --- Shared Layout Components --- */
 .topbar { 
     background: var(--primary-blue); 
     padding: 18px; 
@@ -34,9 +40,21 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
 }
 .topbar h1 { font-size: 1.2rem; font-weight: 800; }
-.page { padding: 16px; max-width: 500px; margin: auto; }
 
-/* Cards */
+.page { 
+    padding: 16px; 
+    max-width: 500px; 
+    margin: auto; 
+}
+
+.section-label { 
+    font-size: 0.95rem; 
+    font-weight: 800; 
+    color: #000; 
+    margin-bottom: 12px; 
+}
+
+/* --- Cards & UI Elements --- */
 .rainbow-card { 
     background: var(--rainbow); 
     border-radius: 20px; 
@@ -44,35 +62,83 @@ body {
     margin-bottom: 20px; 
     color: white;
 }
-.card-label { font-size: 1rem; font-weight: 800; margin-bottom: 12px; }
 
-/* Navigation */
+.card-label { 
+    font-size: 1rem; 
+    font-weight: 800; 
+    margin-bottom: 12px; 
+}
+
+.item-card, .tx-card, .customer-card {
+    background: white; 
+    border: 1px solid var(--border); 
+    border-radius: 15px; 
+    padding: 15px; 
+    margin-bottom: 10px;
+    transition: transform 0.1s;
+}
+
+.item-card:active { transform: scale(0.98); }
+
+/* --- Bottom Navigation --- */
 .bottom-nav { 
-    position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h); 
-    background: white; border-top: 1px solid var(--border); display: flex; 
-    justify-content: space-around; align-items: center; z-index: 200; 
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    height: var(--bottom-nav-h); 
+    background: white; 
+    border-top: 1px solid var(--border); 
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center; 
+    z-index: 200; 
 }
-.nav-item { flex: 1; text-decoration: none; display: flex; justify-content: center; color: #5f6368; }
+
+.nav-item { 
+    flex: 1; 
+    text-decoration: none; 
+    display: flex; 
+    justify-content: center; 
+    color: #5f6368; 
+}
+
 .nav-icon-wrap { 
-    display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    width: 85px; height: 60px; border-radius: 14px; gap: 2px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    width: 85px; 
+    height: 60px; 
+    border-radius: 14px; 
+    gap: 2px; 
 }
+
 .nav-item.active { color: white; }
 .nav-item.active .nav-icon-wrap { background: var(--active-blue); }
 .nav-item span:first-child { font-size: 1.3rem; }
 .nav-item span:last-child { font-size: 0.75rem; font-weight: 700; }
 
-/* Components */
-.section-label { font-size: 0.95rem; font-weight: 800; color: #000; margin-bottom: 12px; }
+/* --- Status Badges & Utilities --- */
+.low-stock { color: var(--red); font-weight: 800; }
+
 .toast { 
-    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); 
-    background: #323232; color: white; padding: 12px 24px; border-radius: 50px; 
-    font-size: 0.9rem; opacity: 0; transition: 0.3s; z-index: 1000;
+    position: fixed; 
+    bottom: 100px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    background: #323232; 
+    color: white; 
+    padding: 12px 24px; 
+    border-radius: 50px; 
+    font-size: 0.9rem; 
+    opacity: 0; 
+    transition: 0.3s; 
+    z-index: 1000;
+    pointer-events: none;
 }
 .toast.show { opacity: 1; }
 
-/* Shared List Items */
-.item-card, .tx-card, .customer-card {
-    background: white; border: 1px solid var(--border); border-radius: 15px; 
-    padding: 15px; margin-bottom: 10px;
-}
+/* --- Common Text Colors --- */
+.text-muted { color: var(--text-muted); }
+.price-tag { font-weight: 900; font-size: 1.1rem; }
