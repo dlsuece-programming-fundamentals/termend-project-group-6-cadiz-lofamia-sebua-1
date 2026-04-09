@@ -5,7 +5,17 @@
 
 ## Abstract
 
-A concise summary of the project, its objectives, and its outcomes.
+	This project presents a web-based, lightweight inventory and debt management app that is designed for sari-sari store owners with low-end mobile devices has been developed through this project. These traditional neighborhood stores in the Philippines typically use technology that consists of paper-based records and manual calculation in order to perform their business transactions, thus making it difficult to accurately track and record business processes like sales, expenses, and inventory levels as a consequence of common issues associated with manual data entry, for example, error in calculation, damage to paper records, and loss of paper records.
+
+
+	The aim of this project is to provide a solution to the problem of bridging the gap between manual processes and complex retail software, which are typically complex and depend heavily on cloud-based services by providing a solution with a focus on low data consumption, minimal storage requirements less than 20 MB, and high usability.
+
+
+	The application was developed using a web-based technology stack consisting of HTML, CSS, and JavaScript using the Bootstrap framework for the front-end user interface, PHP and MySQL for back-end data management. Some of the key features include real-time inventory tracking, calculating of debt balances in real-time with the ability to partially pay off a debt balance, and daily sales summary production.
+
+
+	Testing is done on low-end Android devices shows that the app successfully meets all functional requirements and that users are experiencing a seamless user experience with each action completed within 2 seconds. Although the current version of this application requires internet connectivity to access a centralized database, it demonstrates that simplified “mobile first” technology solutions can dramatically enhance both the operational efficiency of micro-retailers and the accuracy of their financial reporting.
+
 
 ## Introduction
 
