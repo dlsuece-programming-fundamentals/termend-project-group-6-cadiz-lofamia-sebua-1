@@ -187,17 +187,22 @@
                 .reduce((sum, u) => sum + parseFloat(u.amount), 0);
             const allPaid = unpaidTotal === 0;
 
-            const utangRows = c.utangs.map(u => `
+            const utangRows = c.utangs.map(u => {
+                const remaining = parseFloat(u.amount) - parseFloat(u.paid_amount || 0);
+                return `
                 <div class="utang-item">
-                    <div class="utang-item-left">
-                        <div class="utang-item-date">${formatDate(u.created_at)}</div>
-                        <div class="utang-item-amount">₱${parseFloat(u.amount).toFixed(2)}</div>
+                    <div style="flex:1">
+                        <div style="font-size:0.75rem; color:var(--text-muted)">${new Date(u.created_at).toLocaleDateString()}</div>
+                        <div style="font-weight:800">₱${remaining.toFixed(2)} <small style="font-weight:400">(Total: ₱${u.amount})</small></div>
                     </div>
-                    <span class="utang-status ${u.status}">${u.status}</span>
-                    ${u.status === 'unpaid'
-                        ? `<button class="pay-btn" onclick="payUtang(${u.id})">Mark Paid</button>`
-                        : ''}
-                </div>`).join('');
+                    <div style="display:flex; align-items:center; gap:5px">
+                        ${u.status === 'unpaid' ? `
+                            <input type="number" id="pay-amt-${u.id}" placeholder="₱" style="width:60px; padding:5px; border-radius:8px; border:1px solid #ddd">
+                            <button class="pay-btn" onclick="payPartial(${u.id})">Pay</button>
+                        ` : '<span class="utang-status paid">PAID</span>'}
+                    </div>
+                </div>`;
+            }).join('');
 
             return `
             <div class="customer-card">
@@ -226,6 +231,30 @@
             loadCustomers();
         } catch (err) { showToast('❌ ' + err.message); }
     }
+    async function payPartial(id) {
+    const amtInput = document.getElementById(`pay-amt-${id}`);
+    const amount = parseFloat(amtInput.value);
+
+    if (isNaN(amount) || amount <= 0) {
+        showToast('⚠️ Enter a valid amount');
+        return;
+    }
+
+    try {
+        const res = await fetch('api/pay_utang.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, amount })
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast('✅ Payment recorded');
+            loadCustomers();
+        }
+    } catch (err) {
+        showToast('❌ Error processing payment');
+    }
+}
 
     function formatDate(dateStr) {
         if (!dateStr) return '';
