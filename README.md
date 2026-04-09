@@ -137,13 +137,13 @@ Check off each item as you complete it:
 - [ ] **Project Documentation** — this README or uploaded document following the format above
 - [X] **App Design** — Figma link submitted on Canvas
 - [X] **Source Code** — all HTML, CSS, JS, and assets in `src/`
-- [ ] **Video Walkthrough** — max 5 minutes, link below
+- [X] **Video Walkthrough** — max 5 minutes, link below
 - [ ] **Peer Grade** — individual submission on Canvas
 
 ## Video Walkthrough
 
 Paste your video link here:
-> (Replace this line with your video link)
+[> (Replace this line with your video link)](https://youtu.be/QKwshvWta24)
 
 Your walkthrough should demonstrate your website's key features and functionality. Max 5 minutes. There will be no presentation — your video should be clear enough that any student taking this course can understand your project.
 
