@@ -28,8 +28,7 @@
             padding-bottom: calc(var(--bottom-nav-h) + 20px);
         }
         .topbar {
-            background: var(--primary-blue);
-            padding: 18px;
+            background: var(--primary-blue); padding: 18px;
             position: sticky; top: 0; z-index: 100;
             text-align: center; color: white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -59,36 +58,66 @@
             justify-content: space-between; margin-bottom: 10px;
         }
         .customer-name { font-weight: 800; font-size: 1rem; }
-        .customer-total {
-            font-size: 1rem; font-weight: 900;
-            color: var(--orange);
-        }
+        .customer-total { font-size: 1rem; font-weight: 900; color: var(--orange); }
         .customer-total.paid { color: var(--green); }
 
         /* Utang items */
-        .utang-list { display: flex; flex-direction: column; gap: 6px; }
+        .utang-list { display: flex; flex-direction: column; gap: 8px; }
         .utang-item {
-            display: flex; align-items: center;
-            justify-content: space-between;
-            background: var(--gray-bg); border-radius: 10px; padding: 8px 12px;
+            background: var(--gray-bg); border-radius: 12px; padding: 12px;
         }
-        .utang-item-left { flex: 1; }
+        .utang-item-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 8px;
+        }
         .utang-item-date { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
-        .utang-item-amount { font-size: 0.9rem; font-weight: 800; }
+        .utang-item-total { font-size: 0.85rem; font-weight: 700; color: var(--text-dark); }
+
+        /* Progress bar */
+        .progress-wrap { margin-bottom: 8px; }
+        .progress-labels {
+            display: flex; justify-content: space-between;
+            font-size: 0.78rem; font-weight: 700; margin-bottom: 4px;
+        }
+        .progress-paid  { color: var(--green); }
+        .progress-remaining { color: var(--orange); }
+        .progress-bar-bg {
+            background: #e0e0e0; border-radius: 10px; height: 8px; overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%; border-radius: 10px;
+            background: var(--green); transition: width 0.3s;
+        }
+
+        /* Payment row */
+        .pay-row { display: flex; gap: 8px; align-items: center; }
+        .pay-input {
+            flex: 1; padding: 10px 12px; border-radius: 10px;
+            border: 1.5px solid var(--border); background: white;
+            font-family: inherit; font-size: 0.9rem; font-weight: 700;
+            color: var(--text-dark); outline: none;
+        }
+        .pay-input:focus { border-color: var(--active-blue); }
+        .pay-btn {
+            padding: 10px 16px; border-radius: 10px; border: none;
+            background: var(--active-blue); color: white;
+            font-family: inherit; font-size: 0.85rem; font-weight: 800;
+            cursor: pointer; white-space: nowrap;
+        }
+        .pay-btn:active { opacity: 0.7; }
+        .pay-full-btn {
+            padding: 10px 16px; border-radius: 10px; border: none;
+            background: #e8f5e9; color: var(--green);
+            font-family: inherit; font-size: 0.85rem; font-weight: 800;
+            cursor: pointer; white-space: nowrap;
+        }
+        .pay-full-btn:active { opacity: 0.7; }
+
         .utang-status {
             font-size: 0.78rem; font-weight: 800;
             padding: 3px 10px; border-radius: 20px;
-            margin-left: 8px;
         }
-        .utang-status.unpaid { background: #fff3e0; color: var(--orange); }
-        .utang-status.paid   { background: #e8f5e9; color: var(--green); }
-        .pay-btn {
-            padding: 6px 12px; border-radius: 10px; border: none;
-            background: #e8f0fe; color: var(--active-blue);
-            font-family: inherit; font-size: 0.8rem; font-weight: 800;
-            cursor: pointer; margin-left: 8px;
-        }
-        .pay-btn:active { opacity: 0.7; }
+        .utang-status.paid { background: #e8f5e9; color: var(--green); }
 
         /* Bottom Nav */
         .bottom-nav {
@@ -145,6 +174,159 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="js/customers.js"> </script>
+<script>
+    const API = {
+        customers: 'api/get_customers.php',
+        pay:       'api/pay_utang.php'
+    };
+
+    async function loadCustomers() {
+        const el = document.getElementById('customerList');
+        el.innerHTML = '<p style="text-align:center;color:gray;padding:20px 0">Loading…</p>';
+        try {
+            const res  = await fetch(API.customers);
+            const data = JSON.parse(await res.text());
+            if (!data.success) throw new Error(data.error);
+            renderCustomers(data.customers);
+            updateTotalUnpaid(data.customers);
+        } catch (err) {
+            el.innerHTML = `<p style="text-align:center;color:red;padding:20px 0;font-size:0.85rem">❌ ${err.message}</p>`;
+        }
+    }
+
+    function updateTotalUnpaid(customers) {
+        let total = 0;
+        customers.forEach(c => {
+            c.utangs.forEach(u => {
+                if (u.status === 'unpaid') {
+                    total += parseFloat(u.amount) - parseFloat(u.paid_amount || 0);
+                }
+            });
+        });
+        document.getElementById('totalUnpaid').innerText = total.toFixed(2);
+    }
+
+    function renderCustomers(customers) {
+        const el = document.getElementById('customerList');
+        if (customers.length === 0) {
+            el.innerHTML = '<p style="text-align:center;color:gray;padding:20px 0">No customers yet.</p>';
+            return;
+        }
+
+        el.innerHTML = customers.map(c => {
+            const unpaidTotal = c.utangs
+                .filter(u => u.status === 'unpaid')
+                .reduce((sum, u) => sum + (parseFloat(u.amount) - parseFloat(u.paid_amount || 0)), 0);
+            const allPaid = unpaidTotal === 0;
+
+            const utangRows = c.utangs.map(u => {
+                const total      = parseFloat(u.amount);
+                const paid       = parseFloat(u.paid_amount || 0);
+                const remaining  = total - paid;
+                const pct        = Math.min(100, (paid / total) * 100).toFixed(1);
+                const isPaid     = u.status === 'paid';
+
+                return `
+                <div class="utang-item">
+                    <div class="utang-item-header">
+                        <div>
+                            <div class="utang-item-date">${formatDate(u.created_at)}</div>
+                            <div class="utang-item-total">Total: ₱${total.toFixed(2)}</div>
+                        </div>
+                        ${isPaid
+                            ? '<span class="utang-status paid">✅ Fully Paid</span>'
+                            : `<span style="font-size:0.85rem;font-weight:900;color:var(--orange)">₱${remaining.toFixed(2)} left</span>`
+                        }
+                    </div>
+
+                    <div class="progress-wrap">
+                        <div class="progress-labels">
+                            <span class="progress-paid">Paid ₱${paid.toFixed(2)}</span>
+                            ${!isPaid ? `<span class="progress-remaining">${pct}%</span>` : ''}
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width:${pct}%"></div>
+                        </div>
+                    </div>
+
+                    ${!isPaid ? `
+                    <div class="pay-row">
+                        <input
+                            type="number"
+                            class="pay-input"
+                            id="pay-amt-${u.id}"
+                            placeholder="Enter amount"
+                            min="1"
+                            max="${remaining.toFixed(2)}"
+                            step="0.01"
+                        >
+                        <button class="pay-btn" onclick="payPartial(${u.id}, ${remaining.toFixed(2)})">Pay</button>
+                        <button class="pay-full-btn" onclick="payFull(${u.id}, ${remaining.toFixed(2)})">Full</button>
+                    </div>` : ''}
+                </div>`;
+            }).join('');
+
+            return `
+            <div class="customer-card">
+                <div class="customer-top">
+                    <div class="customer-name">👤 ${c.name}</div>
+                    <div class="customer-total ${allPaid ? 'paid' : ''}">
+                        ${allPaid ? '✅ All paid' : '₱' + unpaidTotal.toFixed(2)}
+                    </div>
+                </div>
+                <div class="utang-list">${utangRows}</div>
+            </div>`;
+        }).join('');
+    }
+
+    // Pay a custom amount
+    async function payPartial(id, remaining) {
+        const input  = document.getElementById(`pay-amt-${id}`);
+        const amount = parseFloat(input.value);
+
+        if (isNaN(amount) || amount <= 0) {
+            showToast('⚠️ Enter a valid amount'); return;
+        }
+        if (amount > remaining) {
+            showToast(`⚠️ Max payment is ₱${remaining.toFixed(2)}`); return;
+        }
+        await submitPayment(id, amount);
+    }
+
+    // Pay the full remaining balance
+    async function payFull(id, remaining) {
+        if (!confirm(`Pay full remaining ₱${remaining.toFixed(2)}?`)) return;
+        await submitPayment(id, remaining);
+    }
+
+    async function submitPayment(id, amount) {
+        try {
+            const res  = await fetch(API.pay, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, amount })
+            });
+            const data = JSON.parse(await res.text());
+            if (!data.success) throw new Error(data.error);
+            showToast(data.status === 'paid' ? '✅ Fully paid!' : '✅ Payment recorded!');
+            loadCustomers();
+        } catch (err) { showToast('❌ ' + err.message); }
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    loadCustomers();
+</script>
 </body>
 </html>

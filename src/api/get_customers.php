@@ -6,9 +6,9 @@ try {
     // Get all customers
     $customers = $pdo->query("SELECT id, name FROM customers ORDER BY name ASC")->fetchAll();
 
-    // For each customer get their utang records with transaction date
+    // For each customer, get their utang records including paid_amount
     $stmt = $pdo->prepare("
-        SELECT u.id, u.amount, u.status, t.created_at
+        SELECT u.id, u.amount, u.paid_amount, u.status, t.created_at
         FROM utang u
         JOIN transactions t ON t.id = u.transaction_id
         WHERE u.customer_id = ?
