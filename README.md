@@ -148,14 +148,12 @@ Check off each item as you complete it:
 - [X] **App Design** — Figma link submitted on Canvas
 - [X] **Source Code** — all HTML, CSS, JS, and assets in `src/`
 - [X] **Video Walkthrough** — max 5 minutes, link below
-- [ ] **Peer Grade** — individual submission on Canvas
+- [X] **Peer Grade** — individual submission on Canvas
 
 ## Video Walkthrough
 
-Paste your video link here:
-https://youtu.be/QKwshvWta24
+Video link: https://youtu.be/QKwshvWta24
 
-Your walkthrough should demonstrate your website's key features and functionality. Max 5 minutes. There will be no presentation — your video should be clear enough that any student taking this course can understand your project.
 
 ## How to Run
 
