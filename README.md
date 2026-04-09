@@ -165,7 +165,8 @@ Provide step-by-step instructions so that anyone who downloads this repository c
 # 1. Import the database in http://localhost/phpmyadmin
 # 2. Open XAMPP Control Panel and start Apache and MySQL
 # 3. Open a browser
-# 4. Type http://localhost/termend-project-group-6-cadiz-lofamia-sebua-1/src/summary.html in the search bar.
+# 4. Type http://localhost/termend-project-group-6-cadiz-lofamia-sebua-1/src/sell.html in the search bar.
+# 5. Another alternative is to have a server running, the website is https://dorothy-unhectic-valarie.ngrok-free.dev/termend-project-group-6-cadiz-lofamia-sebua-1/src/sell.html
 ```
 
 ## Project Structure
