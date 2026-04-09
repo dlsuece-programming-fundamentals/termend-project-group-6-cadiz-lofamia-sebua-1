@@ -108,13 +108,23 @@ B. Testing
 ## Testing and Evaluation of Results
 
 ### Results
-Present the outcomes of the project, including functionality and performance. Use screenshots or tables if necessary to illustrate testing results.
+
 
 ### Discussion
-Analyze the results and discuss their implications. Compare the project's outcomes with the initial objectives presented in your proposal.
+	The results show that the system successfully fulfills its primary objective of providing a simple and efficient tool for sari-sari store owners to manage customers, track debts, and record transactions. Functional testing confirmed that all the core features operate correctly when the system is connected to the internet, including debt management, inventory updates, and sales recording.
+
+	The application also met the objective of maintaining ease of use, as tasks can be completed within a few interactions, and the interface remains simple and easy to use. This supports the goal of creating a user-friendly system for non-technical users.
+
+	However, the system requires an active internet connection to function, as it relies on a centralized database for data storage and retrieval. This limitation may affect usability in areas with unstable or limited connectivity. Despite this, the system remains suitable for users with basic internet access, which aligns with the initial assumption that store owners already use smartphones and have access to mobile data.
+
+	Overall, the outcomes are consistent with the proposed objectives in terms of simplicity, usability, and core functionality, while acknowledging the dependency on internet connectivity.
 
 ### Conclusion
-Summarize the key findings and contributions of the project. Offer insights into the future potential of the website.
+	The project successfully developed a web-based application that supports sari-sari store owners in managing sales, inventory, and customer debts. The system provides a simple and structured approach to recording transactions and monitoring outstanding balances to reduce reliance on manual record-keeping methods.
+
+	The key contribution of the system lies in its ease of use and ability to optimize basic store operations through a lightweight interface. Testing results confirm that the application performs its intended functions effectively when an internet connection is available.
+
+	For future improvements, the system may be enhanced by incorporating offline functionality, enabling data synchronization once connectivity is restored, and expanding reporting features for better analysis of store performance. These improvements could further increase the system’s usability and accessibility for a wider range of users.
 
 ## References
 
