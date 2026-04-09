@@ -5,9 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sari-Sari Store — Customers</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Specific styles for the Customer/Debt layout */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --primary-blue: #6146ff;
+            --active-blue: #226cff;
+            --rainbow: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+            --gray-bg: #f8f9fa;
+            --text-dark: #1a1d23;
+            --text-muted: #adb5bd;
+            --border: #e9ecef;
+            --bottom-nav-h: 75px;
+            --red: #e53935;
+            --green: #43a047;
+            --orange: #ef6c00;
+        }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--gray-bg);
+            color: var(--text-dark);
+            min-height: 100dvh;
+            padding-bottom: calc(var(--bottom-nav-h) + 20px);
+        }
+        .topbar {
+            background: var(--primary-blue);
+            padding: 18px;
+            position: sticky; top: 0; z-index: 100;
+            text-align: center; color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .topbar h1 { font-size: 1.2rem; font-weight: 800; }
+        .page { padding: 16px; max-width: 500px; margin: auto; }
+
+        /* Summary Bar */
         .summary-bar {
             background: var(--rainbow);
             border-radius: 20px; padding: 20px;
@@ -16,70 +46,201 @@
         .summary-bar .lbl { font-size: 0.9rem; font-weight: 700; opacity: 0.85; }
         .summary-bar .amt { font-size: 1.8rem; font-weight: 900; margin-top: 4px; }
 
+        .section-label { font-size: 0.95rem; font-weight: 800; color: #000; margin-bottom: 12px; }
+
+        /* Customer Cards */
+        .customer-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .customer-card {
+            background: white; border: 1px solid var(--border);
+            border-radius: 15px; padding: 15px;
+        }
         .customer-top {
             display: flex; align-items: center;
             justify-content: space-between; margin-bottom: 10px;
         }
         .customer-name { font-weight: 800; font-size: 1rem; }
-        .customer-total { font-size: 1rem; font-weight: 900; color: var(--orange); }
+        .customer-total {
+            font-size: 1rem; font-weight: 900;
+            color: var(--orange);
+        }
         .customer-total.paid { color: var(--green); }
 
+        /* Utang items */
+        .utang-list { display: flex; flex-direction: column; gap: 6px; }
         .utang-item {
             display: flex; align-items: center;
             justify-content: space-between;
             background: var(--gray-bg); border-radius: 10px; padding: 8px 12px;
-            margin-bottom: 6px;
         }
+        .utang-item-left { flex: 1; }
         .utang-item-date { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
         .utang-item-amount { font-size: 0.9rem; font-weight: 800; }
-        
         .utang-status {
             font-size: 0.78rem; font-weight: 800;
             padding: 3px 10px; border-radius: 20px;
+            margin-left: 8px;
         }
         .utang-status.unpaid { background: #fff3e0; color: var(--orange); }
-        .utang-status.paid { background: #e8f5e9; color: var(--green); }
-
+        .utang-status.paid   { background: #e8f5e9; color: var(--green); }
         .pay-btn {
             padding: 6px 12px; border-radius: 10px; border: none;
             background: #e8f0fe; color: var(--active-blue);
             font-family: inherit; font-size: 0.8rem; font-weight: 800;
             cursor: pointer; margin-left: 8px;
         }
+        .pay-btn:active { opacity: 0.7; }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h);
+            background: white; border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around; align-items: center; z-index: 200;
+        }
+        .nav-item { flex: 1; text-decoration: none; display: flex; justify-content: center; color: #5f6368; }
+        .nav-icon-wrap {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; width: 85px; height: 60px; border-radius: 14px; gap: 2px;
+        }
+        .nav-item.active { color: white; }
+        .nav-item.active .nav-icon-wrap { background: var(--active-blue); }
+        .nav-item span:first-child { font-size: 1.3rem; }
+        .nav-item span:last-child { font-size: 0.75rem; font-weight: 700; }
+
+        .toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: #323232; color: white; padding: 12px 24px; border-radius: 50px;
+            font-size: 0.9rem; opacity: 0; transition: 0.3s; z-index: 1000;
+        }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="topbar"><h1>Customers</h1></div>
+<div class="topbar"><h1>Customers</h1></div>
 
-    <div class="page">
-        <div class="summary-bar">
-            <div class="lbl">Total Unpaid Utang</div>
-            <div class="amt">₱<span id="totalUnpaid">0.00</span></div>
-        </div>
-
-        <div class="section-label">Customer Debts</div>
-        <div id="customerList">
-            </div>
+<div class="page">
+    <div class="summary-bar">
+        <div class="lbl">Total Unpaid Utang</div>
+        <div class="amt">₱<span id="totalUnpaid">0.00</span></div>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="sell.html" class="nav-item">
-            <div class="nav-icon-wrap"><span>🛒</span><span>Sell</span></div>
-        </a>
-        <a href="inventory.html" class="nav-item">
-            <div class="nav-icon-wrap"><span>📦</span><span>Inventory</span></div>
-        </a>
-        <a href="customers.html" class="nav-item active">
-            <div class="nav-icon-wrap"><span>👥</span><span>Customers</span></div>
-        </a>
-        <a href="summary.html" class="nav-item">
-            <div class="nav-icon-wrap"><span>📊</span><span>Summary</span></div>
-        </a>
-    </nav>
+    <div class="section-label">Customer Debts</div>
+    <div class="customer-list" id="customerList"></div>
+</div>
 
-    <div class="toast" id="toast"></div>
+<nav class="bottom-nav">
+    <a href="sell.html" class="nav-item">
+        <div class="nav-icon-wrap"><span>🛒</span><span>Sell</span></div>
+    </a>
+    <a href="inventory.html" class="nav-item">
+        <div class="nav-icon-wrap"><span>📦</span><span>Inventory</span></div>
+    </a>
+    <a href="customers.html" class="nav-item active">
+        <div class="nav-icon-wrap"><span>👥</span><span>Customers</span></div>
+    </a>
+    <a href="summary.html" class="nav-item">
+        <div class="nav-icon-wrap"><span>📊</span><span>Summary</span></div>
+    </a>
+</nav>
 
-    <script src="js/customers.js"></script>
+<div class="toast" id="toast"></div>
+
+<script>
+    const API = {
+        customers: 'api/get_customers.php',
+        pay:       'api/pay_utang.php'
+    };
+
+    async function loadCustomers() {
+        const el = document.getElementById('customerList');
+        el.innerHTML = '<p style="text-align:center;color:gray;padding:20px 0">Loading…</p>';
+        try {
+            const res  = await fetch(API.customers);
+            const data = JSON.parse(await res.text());
+            if (!data.success) throw new Error(data.error);
+            renderCustomers(data.customers);
+            updateTotalUnpaid(data.customers);
+        } catch (err) {
+            el.innerHTML = `<p style="text-align:center;color:red;padding:20px 0">❌ ${err.message}</p>`;
+        }
+    }
+
+    function updateTotalUnpaid(customers) {
+        let total = 0;
+        customers.forEach(c => {
+            c.utangs.forEach(u => {
+                if (u.status === 'unpaid') total += parseFloat(u.amount);
+            });
+        });
+        document.getElementById('totalUnpaid').innerText = total.toFixed(2);
+    }
+
+    function renderCustomers(customers) {
+        const el = document.getElementById('customerList');
+        if (customers.length === 0) {
+            el.innerHTML = '<p style="text-align:center;color:gray;padding:20px 0">No customers yet.</p>';
+            return;
+        }
+        el.innerHTML = customers.map(c => {
+            const unpaidTotal = c.utangs
+                .filter(u => u.status === 'unpaid')
+                .reduce((sum, u) => sum + parseFloat(u.amount), 0);
+            const allPaid = unpaidTotal === 0;
+
+            const utangRows = c.utangs.map(u => `
+                <div class="utang-item">
+                    <div class="utang-item-left">
+                        <div class="utang-item-date">${formatDate(u.created_at)}</div>
+                        <div class="utang-item-amount">₱${parseFloat(u.amount).toFixed(2)}</div>
+                    </div>
+                    <span class="utang-status ${u.status}">${u.status}</span>
+                    ${u.status === 'unpaid'
+                        ? `<button class="pay-btn" onclick="payUtang(${u.id})">Mark Paid</button>`
+                        : ''}
+                </div>`).join('');
+
+            return `
+            <div class="customer-card">
+                <div class="customer-top">
+                    <div class="customer-name">👤 ${c.name}</div>
+                    <div class="customer-total ${allPaid ? 'paid' : ''}">
+                        ${allPaid ? '✅ All paid' : '₱' + unpaidTotal.toFixed(2)}
+                    </div>
+                </div>
+                <div class="utang-list">${utangRows}</div>
+            </div>`;
+        }).join('');
+    }
+
+    async function payUtang(utangId) {
+        if (!confirm('Mark this utang as paid?')) return;
+        try {
+            const res  = await fetch(API.pay, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: utangId })
+            });
+            const data = JSON.parse(await res.text());
+            if (!data.success) throw new Error(data.error);
+            showToast('✅ Marked as paid!');
+            loadCustomers();
+        } catch (err) { showToast('❌ ' + err.message); }
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    loadCustomers();
+</script>
 </body>
 </html>
