@@ -152,8 +152,10 @@ Check off each item as you complete it:
 
 ## Video Walkthrough
 
-Video link: https://youtu.be/QKwshvWta24
+Paste your video link here:
+https://youtu.be/QKwshvWta24
 
+Your walkthrough should demonstrate your website's key features and functionality. Max 5 minutes. There will be no presentation — your video should be clear enough that any student taking this course can understand your project.
 
 ## How to Run
 
@@ -171,17 +173,35 @@ Provide step-by-step instructions so that anyone who downloads this repository c
 
 ```
 ├── src/
-│   ├── index.html
+│   ├── docs/
+│   │   └──[LBYCPG3] Final Project Documentation.docx
+│   ├── api/
+│   │   ├── add_item.php
+│   │   ├── config.php
+│   │   ├── delete_item.php
+│   │   ├── get_customers.php
+│   │   ├── get_items.php
+│   │   ├── get_summary.php
+│   │   ├── pay_utang.php
+│   │   ├── process_sale.php
+│   │   └── update_item.php
+│   ├── assets/
+│   │   └── .gitkeep
 │   ├── css/
+│   │   ├── .gitkeep
 │   │   └── style.css
 │   ├── js/
-│   │   └── script.js
-│   ├── assets/
-│   │   └── (images, fonts, etc.)
-│   └── ...
-├── docs/
-│   └── (documentation files, if separate from README)
-└── README.md
+│   │   ├── .gitkeep
+│   │   ├── customers.js
+│   │   ├── inventory.js
+│   │   ├── sell.js
+│   │   └── summary.js
+│   ├── customers.html
+│   ├── inventory.html
+│   ├── sell.html
+│   └── summary.html
+├── README.md
+└── sari_sari_db.sql
 ```
 
 ## Submission Notes
