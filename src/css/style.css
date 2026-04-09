@@ -76,3 +76,28 @@ body {
     background: white; border: 1px solid var(--border); border-radius: 15px; 
     padding: 15px; margin-bottom: 10px;
 }
+
+/* Status Tags for Summary */
+.status-tag {
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.status-tag.paid {
+    background: white;
+    color: green; 
+}
+
+.status-tag.unpaid {
+    background: white;
+    color: red; 
+}
+
+.tx-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+}
