@@ -162,9 +162,10 @@ Your walkthrough should demonstrate your website's key features and functionalit
 Provide step-by-step instructions so that anyone who downloads this repository can run your website:
 
 ```
-# Example:
-# 1. Open index.html in a browser
-# 2. Or run a local server: python -m http.server 8000
+# 1. Import the Database
+# 2. Open XAMPP Control Panel and start Apache and MySQL
+# 3. Open a browser
+# 4. Type http://localhost/termend-project-group-6-cadiz-lofamia-sebua-1/src/summary.html in the search bar.
 ```
 
 ## Project Structure
