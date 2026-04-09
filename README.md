@@ -125,8 +125,8 @@ Cite all sources, research papers, and references used in the project.
 Check off each item as you complete it:
 
 - [ ] **Project Documentation** — this README or uploaded document following the format above
-- [ ] **App Design** — Figma link submitted on Canvas
-- [ ] **Source Code** — all HTML, CSS, JS, and assets in `src/`
+- [X] **App Design** — Figma link submitted on Canvas
+- [X] **Source Code** — all HTML, CSS, JS, and assets in `src/`
 - [ ] **Video Walkthrough** — max 5 minutes, link below
 - [ ] **Peer Grade** — individual submission on Canvas
 
